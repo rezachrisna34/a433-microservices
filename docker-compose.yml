@@ -1,0 +1,25 @@
+# version: '3.8' # Menggunakan versi 3 sesuai kriteria (> versi 2)
+
+services:
+  # Service Database menggunakan MongoDB
+  item-db:
+    image: mongo:3
+    restart: always # Saran: Restart otomatis jika container crash
+    volumes:
+      - app-db:/data/db
+
+  # Service Aplikasi Item App
+  item-app:
+    image: rezachrisna34/item-app:v1
+    restart: always
+    ports:
+      - "80:8080" # Mapping port 80 host ke 8080 container
+    depends_on:
+      - item-db # Memastikan DB jalan lebih dulu
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=item-db
+
+# Definisi volume untuk data MongoDB agar tidak hilang saat container dihapus
+volumes:
+  app-db:
